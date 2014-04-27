@@ -1,0 +1,10 @@
+Math Repository
+
+This is my repository of Math-related Java code.  It is a package that can be imported.
+
+Planned contents:
+ [*] NumberTheory.java
+ [*] Combinatorics.java
+ [*] Graph.java
+ [*] Tree.java
+ [*] Matrix.java
