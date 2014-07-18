@@ -2,9 +2,21 @@ Math Repository
 
 This is my repository of Math-related Java code.  It is a package that can be imported.
 
-Planned contents:
+Current contents:
  [*] NumberTheory.java
+      [*] getPrimes: returns a list of primes less than N. (int only)
+      [*] getFactors: returns a list of factors of N. (int only)
+      [*] divisorCt: returns the number of divisors of N. (int only)
+      [*] gcd: returns the greatest common divisor of two integers.  (int or long)
+      
+To add:
+ [*] NumberTheory.java
+      [*] phi: Euler's totient
+      [*] modInverse: Compute the inverse of an element modulo n
+      [*] fib: Returns list of Fibonacci numbers
  [*] Combinatorics.java
+      [*] fact: factorial (should throw error on overflow)
+      [*] binom: binomial coefficient (should throw error on overflow)
  [*] Graph.java
  [*] Tree.java
  [*] Matrix.java
