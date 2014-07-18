@@ -4,8 +4,10 @@ import java.util.*;
 
 public class NumberTheory {
   public static void main(String[] args) {
-    System.out.printf("The prime factors of %d are %s\n", 1281942112, getFactors(1281942112 ));
-    
+    System.out.printf("The prime factors of %d are %s\n", 1281942112, getFactors(1281942112));
+    System.out.printf("The number of divisors of %d is %d\n", 97, divisorCt(97));
+    System.out.printf("gcd(%d, %d) = %d\n", 134, 583, gcd(134, 583));
+    System.out.printf("gcd(%d, %d) = %d\n", 1281942112, 1123124281942112L, gcd(1281942112, 1123124281942112L));
   }
   
 
@@ -13,6 +15,7 @@ public class NumberTheory {
   private static ArrayList<Integer> primeList;
   private static int lastPrimeUpperLimit = -1;
   /**
+    *  getPrimes(N)
     *  Uses the Sieve of Eratosthenes to find the primes less than or equal to a limit.  Runs in O(N*lg(lg(N))) time. (?)
     *  Result is stored in a private static field for fast additional calls.
     *  @param N Searches for primes less than or equal to this limit
@@ -61,6 +64,7 @@ public class NumberTheory {
   }
   
   /**
+    *  getFactors(N)
     *  Factors a number using trial division, testing only the primes under the square root of the input
     *  @param N The integer to factor
     *  @return an ArrayList<Integer> of factors, accounting for multiplicity.
@@ -86,5 +90,60 @@ public class NumberTheory {
       factors.add(N);
     
     return factors;
+  }
+  
+  /**
+    * divisorCt(N)
+    * Determines the number of divisors of an integer
+    * Operates in sub-linearithmic time, plus time for computing primes under sqrt(N).
+    * @param N The integer of which we're counting divisors.
+    * @return the number of divisors of N
+    */
+  public static int divisorCt(int N) {
+    List<Integer> primes = getPrimes((int)Math.sqrt(N));
+    int divisorCt = 1;
+    
+    for (int i = 0; N > 1 && i < primes.size(); i++) {
+      int exponent = 0;
+      int currPrime = primes.get(i);
+      
+      //While the current prime is a factor, divide it out!
+      while(N % currPrime == 0) {
+        N /= currPrime;
+        exponent++;
+      }
+      
+      //(exponent+1) options for this exponent, so account for that many new cases
+      divisorCt *= (exponent + 1);
+    }
+    
+    //If N != 1, then N is the single prime factor greater than sqrt(N).
+    if (N != 1) divisorCt *= 2;
+    
+    return divisorCt;
+  }
+  
+  /**
+    * gcd(a, b)
+    * @param a
+    * @param b
+    * @return the greatest common divisor of a and b
+    */
+  public static int gcd(int a, int b) { 
+    //reuse code...
+    return (int) gcd((long) a, (long) b);
+  }
+  
+  /**
+    * gcd(a, b)
+    * @param a
+    * @param b
+    * @return the greatest common divisor of a and b
+    */
+  public static long gcd(long a, long b) {
+    if (b >  a) return gcd(b, a);
+    if (b == 0) return a;
+    
+    return gcd(b, a % b);
   }
 }
