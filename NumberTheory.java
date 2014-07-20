@@ -8,6 +8,7 @@ public class NumberTheory {
     System.out.printf("The number of divisors of %d is %d\n", 97, divisorCt(97));
     System.out.printf("gcd(%d, %d) = %d\n", 134, 583, gcd(134, 583));
     System.out.printf("gcd(%d, %d) = %d\n", 1281942112, 1123124281942112L, gcd(1281942112, 1123124281942112L));
+    System.out.printf("gcd(%d, %d, %d) = %d\n", 45, 15, 65, gcd(45, 15, 65));
   }
   
 
@@ -124,26 +125,44 @@ public class NumberTheory {
   }
   
   /**
-    * gcd(a, b)
-    * @param a
-    * @param b
+    * gcd(a, b, c, ...)
+    * 
+    * @param args a variable-length argument list, of which to take the GCD.
     * @return the greatest common divisor of a and b
     */
-  public static int gcd(int a, int b) { 
-    //reuse code...
-    return (int) gcd((long) a, (long) b);
-  }
-  
-  /**
-    * gcd(a, b)
-    * @param a
-    * @param b
-    * @return the greatest common divisor of a and b
-    */
-  public static long gcd(long a, long b) {
-    if (b >  a) return gcd(b, a);
-    if (b == 0) return a;
+  public static long gcd(long... args) {
+    //Take care of illegal argument
+    if (args.length < 1) {
+      throw new IllegalArgumentException("gcd requires more than one argument");
+    }
+    else if (args.length == 1) { //GCD(a) = a
+      return args[0];
+    }
+    else if (args.length == 2) { //Standard Euclidean algorithm
+      long a = Math.max(args[0], args[1]);
+      long b = Math.min(args[0], args[1]);
+      long tmp;
+      
+      //Euclidean algorithm
+      while (b > 0) {
+        tmp = b;
+        b = a % tmp;
+        a = tmp;
+      }
+      
+      return a;
+    }
+    else if (args.length > 2) { //Euclidean algorithm for n integers
+      //Adapted from Knuth AOCP, 4.5.2 Algorithm C 
+      long d = args[0];
+      
+      for (int i = 1; d != 1 && i < args.length; i++) {
+        d = gcd(args[i], d);
+      }
+      
+      return d;
+    }
     
-    return gcd(b, a % b);
+    return -1; //Never happens, but Java needs a return...
   }
 }
