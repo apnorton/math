@@ -9,6 +9,7 @@ public class NumberTheory {
     System.out.printf("gcd(%d, %d) = %d\n", 134, 583, gcd(134, 583));
     System.out.printf("gcd(%d, %d) = %d\n", 1281942112, 1123124281942112L, gcd(1281942112, 1123124281942112L));
     System.out.printf("gcd(%d, %d, %d) = %d\n", 45, 15, 65, gcd(45, 15, 65));
+    System.out.printf("gcd() = %d", gcd());
   }
   
 
@@ -133,7 +134,7 @@ public class NumberTheory {
   public static long gcd(long... args) {
     //Take care of illegal argument
     if (args.length < 1) {
-      throw new IllegalArgumentException("gcd requires more than one argument");
+      throw new IllegalArgumentException("gcd requires at least one argument");
     }
     else if (args.length == 1) { //GCD(a) = a
       return args[0];
