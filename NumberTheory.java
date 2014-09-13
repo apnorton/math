@@ -3,13 +3,17 @@ package math;
 import java.util.*;
 
 public class NumberTheory {
+  /**
+    * The Golden Ratio.
+    */
+  public final static double phi = (1 + Math.sqrt(5))/2;
+  
   public static void main(String[] args) {
     System.out.printf("The prime factors of %d are %s\n", 1281942112, getFactors(1281942112));
     System.out.printf("The number of divisors of %d is %d\n", 97, divisorCt(97));
     System.out.printf("gcd(%d, %d) = %d\n", 134, 583, gcd(134, 583));
     System.out.printf("gcd(%d, %d) = %d\n", 1281942112, 1123124281942112L, gcd(1281942112, 1123124281942112L));
     System.out.printf("gcd(%d, %d, %d) = %d\n", 45, 15, 65, gcd(45, 15, 65));
-    System.out.printf("gcd() = %d", gcd());
   }
   
 
@@ -140,11 +144,12 @@ public class NumberTheory {
       return args[0];
     }
     else if (args.length == 2) { //Standard Euclidean algorithm
+      //Ensure that a >= b
       long a = Math.max(args[0], args[1]);
       long b = Math.min(args[0], args[1]);
-      long tmp;
       
       //Euclidean algorithm
+      long tmp;
       while (b > 0) {
         tmp = b;
         b = a % tmp;
@@ -153,7 +158,7 @@ public class NumberTheory {
       
       return a;
     }
-    else if (args.length > 2) { //Euclidean algorithm for n integers
+    else { // if (args.length > 2) -- this is the Euclidean algorithm for n integers
       //Adapted from Knuth AOCP, 4.5.2 Algorithm C 
       long d = args[0];
       
@@ -163,7 +168,40 @@ public class NumberTheory {
       
       return d;
     }
-    
-    return -1; //Never happens, but Java needs a return...
+  }
+  
+  /**
+    * triangle(n) provides the nth triangular number.
+    * <p>
+    * These are computed with the formula \f[T_n = \sum_{k=1}^n k = \frac{n(n+1)}{2}\f]
+    * @return the nth triangular number
+    */
+  public static long triangle(long n) {
+    if ((n & 1) == 1)
+      return ((n+1)/2)*n;
+    else
+      return (n/2)*(n+1);
+  }
+  
+  /**
+    * This is an inverse for Binet's formula.  
+    * <p>
+    * Formula from <a href="http://math.stackexchange.com/a/374760/23353">Math.SE</a>:
+    * \f[ n=\left[ \log_\phi \sqrt{5}(F_n-\frac{1}{2}) \right],\quad n \ge 3\f]
+    * (where [x] is the rounding function.)
+    * I've manually corrected the case where \f$0\le n < 3\f$, and negative inputs return -1.
+    * <p>
+    * It is safe to return an integer, because all long values are less than fib(93).
+    *
+    * @param f the input number
+    * @return the index of the largest Fibonacci number less than or equal to f.
+    */
+  public static int inverseFibonacci(long f) {
+    if (f < 0) return -1;
+    else if (f == 0) return 0;
+    else if (f <= 2) return 1;
+    else {
+      return (int) Math.round(Math.log(Math.sqrt(5) * (f - 0.5))/Math.log(phi));
+    }
   }
 }
