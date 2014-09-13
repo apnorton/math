@@ -5,6 +5,7 @@ import java.util.*;
 public class NumberTheory {
   /**
     * The Golden Ratio.
+    * $$\phi = \frac{1+\sqrt{5}}{2} \approx 1.61803$$
     */
   public final static double phi = (1 + Math.sqrt(5))/2;
   
@@ -21,11 +22,11 @@ public class NumberTheory {
   private static ArrayList<Integer> primeList;
   private static int lastPrimeUpperLimit = -1;
   /**
-    *  getPrimes(N)
-    *  Uses the Sieve of Eratosthenes to find the primes less than or equal to a limit.  Runs in O(N*lg(lg(N))) time. (?)
+    *  Uses the Sieve of Eratosthenes to find the primes less than or equal to a limit.  Runs in \(\mathcal{O}(N\lg(\lg(N)))\) time.
+    *  <p>
     *  Result is stored in a private static field for fast additional calls.
     *  @param N Searches for primes less than or equal to this limit
-    *  @return An ArrayList<Integer> containing retrieved primes (in order).
+    *  @return An ArrayList&lt;Integer&gt; containing retrieved primes (in order).
     *  Runs an implementation of the Sieve of Eratosthenes.
     */
   public static ArrayList<Integer> getPrimes(int N) {
@@ -70,10 +71,9 @@ public class NumberTheory {
   }
   
   /**
-    *  getFactors(N)
     *  Factors a number using trial division, testing only the primes under the square root of the input
     *  @param N The integer to factor
-    *  @return an ArrayList<Integer> of factors, accounting for multiplicity.
+    *  @return an ArrayList&lt;Integer&gt; of factors, accounting for multiplicity.
     */
   public static ArrayList<Integer> getFactors(int N) {
     int primeLimit = (int)(Math.sqrt(N)); //Only one prime factor can be greater than the sqrt of N&1
@@ -99,9 +99,8 @@ public class NumberTheory {
   }
   
   /**
-    * divisorCt(N)
     * Determines the number of divisors of an integer
-    * Operates in sub-linearithmic time, plus time for computing primes under sqrt(N).
+    * Operates in sub-linearithmic time, plus time for computing primes under \(\sqrt{N}\).
     * @param N The integer of which we're counting divisors.
     * @return the number of divisors of N
     */
@@ -130,7 +129,7 @@ public class NumberTheory {
   }
   
   /**
-    * gcd(a, b, c, ...)
+    * Computes the gcd of arbitrarily many integers
     * 
     * @param args a variable-length argument list, of which to take the GCD.
     * @return the greatest common divisor of a and b
@@ -171,9 +170,11 @@ public class NumberTheory {
   }
   
   /**
-    * triangle(n) provides the nth triangular number.
+    * Computes the nth triangular number.
     * <p>
-    * These are computed with the formula \f[T_n = \sum_{k=1}^n k = \frac{n(n+1)}{2}\f]
+    * These are computed with the formula \(T_n = \sum_{k=1}^n k = \frac{n(n+1)}{2}\).
+    * Care is taken to avoid unnecessary overflow.
+    * @param n the index
     * @return the nth triangular number
     */
   public static long triangle(long n) {
@@ -187,11 +188,11 @@ public class NumberTheory {
     * This is an inverse for Binet's formula.  
     * <p>
     * Formula from <a href="http://math.stackexchange.com/a/374760/23353">Math.SE</a>:
-    * \f[ n=\left[ \log_\phi \sqrt{5}(F_n-\frac{1}{2}) \right],\quad n \ge 3\f]
-    * (where [x] is the rounding function.)
-    * I've manually corrected the case where \f$0\le n < 3\f$, and negative inputs return -1.
+    * $$n=\left[ \log_\phi \sqrt{5}(F_n-\frac{1}{2}) \right],\quad n \ge 3$$
+    * (where \([x]\) is the rounding function.)
+    * I've manually corrected the case where \(0\le n \lt 3\), and negative inputs return -1.
     * <p>
-    * It is safe to return an integer, because all long values are less than fib(93).
+    * It is safe to return an integer, because all long values of fib are less than fib(93).
     *
     * @param f the input number
     * @return the index of the largest Fibonacci number less than or equal to f.

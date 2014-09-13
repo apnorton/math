@@ -9,6 +9,8 @@ public abstract class Sequence<T extends Number> implements Iterable<T>{
   
   /**
     * Creates a finite sequence with the given start and stop indices
+    * @param startIndex The first index of a sequence.  Typically 0 or 1.
+    * @param stopIndex The final index of this sequence.  Only use if implementation of sequence will not support values beyond this.
     */
   public Sequence(long startIndex, long stopIndex) {
     this.startIndex = startIndex;
@@ -18,6 +20,7 @@ public abstract class Sequence<T extends Number> implements Iterable<T>{
   
   /**
     * Creates an "infinite" sequence with the given start index
+    * @param startIndex The first index of a sequence.  Typically 0 or 1.
     */
   public Sequence(long startIndex) { 
     this.startIndex = startIndex;
@@ -33,6 +36,7 @@ public abstract class Sequence<T extends Number> implements Iterable<T>{
   }
   
   /**
+    * @param n the index
     * @return the nth value of the sequence
     */
   public abstract T get(long n);
@@ -92,7 +96,7 @@ public abstract class Sequence<T extends Number> implements Iterable<T>{
     }
     
     /**
-      * Returns the next element in the sequnce
+      * @return the next element in the sequnce
       */
     public T next() {
       if (currIndex == Long.MAX_VALUE) 

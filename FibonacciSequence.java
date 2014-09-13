@@ -2,14 +2,24 @@ package math;
 
 /**
   * @author apnorton
-  * @date 9/13/2014 
   *
-  * @brief A sequence object consisting of all values of the Fibonacci sequence that fit in a long (indices 0-92).
-  * @par Implementation notes
+  * A sequence object consisting of all values of the Fibonacci sequence that fit in a long (indices 0-92).
+  * <p>
   * Beyond the 93rd index, one cannot store the values in a long.  Uses a 93-element array as a memo for computation.
   */
 public class FibonacciSequence extends Sequence<Long> {
   private long[] memo = new long[93];
+  
+  public static void main(String[] args) {
+    Sequence<Long> mySeq = new FibonacciSequence();
+    
+    for (Long f : mySeq) {
+      if (f > 1000) break;
+      
+      if (f % 2 == 0) 
+        System.out.println(f);
+    }
+  }
   
   //The Fibonacci sequence can be stored in a Long iff the index is less than 93
   public FibonacciSequence() {
