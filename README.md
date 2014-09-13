@@ -15,6 +15,25 @@ in an "iterator-friendly" way--this method should be optimized for repeated call
 If you want your sequence to be defined on a particular range of values for `n`, for example `2 <= n <= 439`, set the `startIndex` and `stopIndex` fields when you construct your sequence.  
 It is the responsibility of the your sequence's `get` method to ensure that no calls are made outside of this range.
 
+As an example of a use-case, consider the following program that prints out all even Fibonacci numbers less than 1000:
+
+```
+public static void main(String[] args) {
+  Sequence<Long> fibSeq = new FibonacciSequence();
+  
+  //Iterate over all Fibonacci numbers that can be represented by a Long
+  for (Long f : fibSeq) {
+    if (f > 1000) break; //Stop of you pass 1000
+    
+    //Print out the even ones
+    if (f % 2 == 0) 
+      System.out.println(f);
+  }
+}
+```
+
+Important sequences, such as the sequence of prime numbers, the Fibonacci sequence, etc., can be made into classes that extend Sequence, allowing intuitive iteration over all values within a certain range.
+
 To add
 ------
 
