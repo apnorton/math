@@ -9,15 +9,6 @@ public class NumberTheory {
     */
   public final static double phi = (1 + Math.sqrt(5))/2;
   
-  public static void main(String[] args) {
-    System.out.printf("The prime factors of %d are %s\n", 1281942112, getFactors(1281942112));
-    System.out.printf("The number of divisors of %d is %d\n", 97, divisorCt(97));
-    System.out.printf("gcd(%d, %d) = %d\n", 134, 583, gcd(134, 583));
-    System.out.printf("gcd(%d, %d) = %d\n", 1281942112, 1123124281942112L, gcd(1281942112, 1123124281942112L));
-    System.out.printf("gcd(%d, %d, %d) = %d\n", 45, 15, 65, gcd(45, 15, 65));
-  }
-  
-
   //My variables for caching the result of the function below
   private static ArrayList<Integer> primeList;
   private static int lastPrimeUpperLimit = -1;
@@ -204,5 +195,96 @@ public class NumberTheory {
     else {
       return (int) Math.round(Math.log(Math.sqrt(5) * (f - 0.5))/Math.log(phi));
     }
+  }
+  
+  /**
+    * Returns true if the provided number is a palindrome, false otherwise.
+    * @param n the number
+    * @return true if the provided number is a palindrome, false otherwise.
+    */
+  public static boolean isPalindrome(long n) {
+    char[] digits = Long.toString(n).toCharArray();
+    boolean retVal = true;
+    
+    for (int i = 0; i < digits.length / 2; i++) {
+      retVal &= digits[i] == digits[digits.length - i - 1];
+    }
+    
+    return retVal;
+  }  
+
+  /**
+    * Computes the inverse of n modulo p using the Extended Euclidean Algorithm.
+    * Assumes that n and p are coprime; undefined behavior results if they are not.
+    * @param n a number coprime to p
+    * @param p the modulus
+    * @return the inverse of n modulo p
+    */
+  public static long modInverse(long n, int p) {    
+    long q, r0, r1, r2, s0, s1, s2, t0, t1, t2;
+    
+    if (n > p) n %= p; //Save some time
+    
+    //Initial conditions
+    r0 = p; r1 = n;
+    s0 = 1; s1 = 0;
+    t0 = 0; t1 = 1;
+    
+    //Now, we use the extended euclidean algorithm
+    while(r1 > 0) { //r2 is the "current r," r1 is "one r ago," and r0 is "two r's ago"
+      q = r0 / r1;
+      r2 = r0 - r1*q;
+      
+      s2 = s0 - q*s1;
+      t2 = t0 - q*t1;
+      
+      s0 = s1; s1 = s2;
+      t0 = t1; t1 = t2;
+      r0 = r1; r1 = r2;
+    }
+    
+    return t0; //Coefficient of n in the equation "xn+yp = 1"
+  }
+  
+  /**
+    * Computes the binomial coefficient \(\binom{n}{r} \pmod p\), where \(p\) is a prime number
+    * Uses Lucas' Theorem and modular inverses.
+    * Assumes that \(p\) is prime--otherwise, undefined behavior results.
+    * @param n the \(n\) in \(\binom{n}{r} \pmod p\)
+    * @param r the \(r\) in \(\binom{n}{r} \pmod p\)
+    * @param p the \(p\) in \(\binom{n}{r} \pmod p\)
+    * @return the result of \(\binom{n}{r} \pmod p\)
+    */
+  public static long binomMod(long n, long r, int p) {
+    long retVal = 1;
+    
+    //If n and r are less than p, then we just use the standard process
+    if (n < p && r < p) {      
+      //Computes the denominator
+      for (long i = n; i > n-r; i--)
+        retVal = (retVal * i) % p;
+
+      //Now, compute the denominator
+      for (long i = r; i > 0; i--)
+        retVal = (retVal * modInverse(i, p)) % p;
+      //Note: "denominator" is a figure of speech--
+      //  really, I'm multiplying by the modular inverse
+    }
+    else { //We use Lucas' Theorem!
+      long nCurr, rCurr; //The current digit of n and r in base p.
+      while(r > 0 || n > 0) {
+        //Grab the digits
+        nCurr = n % p; 
+        rCurr = r % p;
+        
+        //The return value is the product (mod p) of binom(nCurr, rCurr)
+        retVal = (retVal * binomMod(nCurr, rCurr, p)) % p;
+        
+        //Strip off the digits we've just used
+        n /= p; 
+        r /= p;
+      }
+    }
+    return retVal;
   }
 }
