@@ -3,7 +3,7 @@ Math Repository
 
 This is my repository of Math-related Java code.  It is a package that can be imported.
 
-See the `docs` folder for Doxygen-generated documentation that lists all current features.
+See the `docs` folder for JavaDoc-generated documentation that lists all current features.  To use the documentation, you must have internet connection; currently, the documentation relies on connectivity to the MathJax website to render mathematical forumlae.  I will fix this, it's just not on the top of my priority list right now.
 
 Sequences
 ---------
@@ -39,11 +39,19 @@ To add
 
   -  NumberTheory.java
       - phi: Euler's totient
-      - modInverse: Compute the inverse of an element modulo n
       - fib: Returns list of Fibonacci numbers
-  -  Combinatorics.java
-      - fact: factorial (should throw error on overflow)
-      - binom: binomial coefficient (should throw error on overflow)
+  -  FieldElement.java (Interface)
+      - mul: returns another field element, corresponding to `this*that`
+      - add: returns another field element, corresponding to `this+that`
+      - sub: returns another field element, corresponding to `this-that`
+      - inverse: returns the inverse of this (nonzero) field element with respect to the "multiplication" operation
+      - isZero: true if this is the additive identity
+      - isOne: true if this is the multiplicative identity
+  -  LinearAlgebra.java 
+      - Performs linear algebra over an arbitrary field
+      - row reduction over a field
+      - Determinant
+      - Eigenvalue?
   -  Graph.java
   -  Tree.java
   -  Matrix.java
