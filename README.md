@@ -5,6 +5,15 @@ This is my repository of Math-related Java code.  It is a package that can be im
 
 See the `docs` folder for JavaDoc-generated documentation that lists all current features.  To use the documentation, you must have internet connection; currently, the documentation relies on connectivity to the MathJax website to render mathematical forumlae.  I will fix this, it's just not on the top of my priority list right now.
 
+Field
+-----
+
+I am working towards a generalized linear system solver, slowly but surely.  Specifically, I want to be able to row-reduce matrices over arbitrary fields; for example, row reduce over the Rational numbers, or over the Integers modulo 13, etc.  Therefore, I have created a `Field` class; this is as close as I can (currently) reasonably get to the concept of a [mathematical field](http://en.wikipedia.org/wiki/Field_%28mathematics%29) from modern algebra.
+
+Note that my `Field` class has a generic parameter; this is to specify a general element of the underlying set.  To construct a `Field` object, you need two `GroupOperation`s.  A `GroupOperation` is an iterface that specifies an invertible binary operation that has an identity element.
+
+I will add more documentation for these features; however, with a bit of knowledge of algebra, one can figure out the organization quite easily.
+
 Sequences
 ---------
 
@@ -40,13 +49,6 @@ To add
   -  NumberTheory.java
       - phi: Euler's totient
       - fib: Returns list of Fibonacci numbers
-  -  FieldElement.java (Interface)
-      - mul: returns another field element, corresponding to `this*that`
-      - add: returns another field element, corresponding to `this+that`
-      - sub: returns another field element, corresponding to `this-that`
-      - inverse: returns the inverse of this (nonzero) field element with respect to the "multiplication" operation
-      - isZero: true if this is the additive identity
-      - isOne: true if this is the multiplicative identity
   -  LinearAlgebra.java 
       - Performs linear algebra over an arbitrary field
       - row reduction over a field
