@@ -2,7 +2,16 @@ package math;
 
 import java.util.*;
 
-public class NumberTheory {
+public class NumberTheory {  
+  public static void main(String[] args) {
+    int set = (1<<30) - 1;
+    int lim = (1<<30);
+    while (set<lim) {
+      System.out.println(String.format("%32s", Integer.toBinaryString(set)).replace(" ", "0"));
+      set = gosper(set);
+    }
+  }
+  
   /**
     * The Golden Ratio.
     * $$\phi = \frac{1+\sqrt{5}}{2} \approx 1.61803$$
@@ -216,6 +225,7 @@ public class NumberTheory {
   /**
     * Computes the inverse of n modulo p using the Extended Euclidean Algorithm.
     * Assumes that n and p are coprime; undefined behavior results if they are not.
+    *
     * @param n a number coprime to p
     * @param p the modulus
     * @return the inverse of n modulo p
@@ -242,6 +252,8 @@ public class NumberTheory {
       t0 = t1; t1 = t2;
       r0 = r1; r1 = r2;
     }
+    
+    if (t0 < 0) t0 += p; //Make positive!
     
     return t0; //Coefficient of n in the equation "xn+yp = 1"
   }
@@ -287,4 +299,78 @@ public class NumberTheory {
     }
     return retVal;
   }
+  
+  /**
+    * Returns true if the provided integer is prime
+    * <p>
+    * Uses repeated Miller-Rabin tests, treating the first 12 primes as bases.
+    * Valid for all values < 2^64 (and a little bit above); do not extend for use with BigIntegers.
+    * Runs in O(lg^3 N) time.  
+    * To compute all primes less than N, this takes O(lg^3(N!)) = O(N lg^3 N) time.
+    * <p>
+    * The idea of this algorithm is to write n-1 = (2^s)d where d is odd and s is non-negative.
+    * Then, n is an a-SPRP if either a^d = 1 (mod n) or (a^d)^2^r = -1 (mod n) for some non-negative r less than s.
+    * From OEIS, if n is a-SPRP for the first 12 primes and n < 2^64, then n is prime.
+    * <p>
+    * Sources: https://primes.utm.edu/prove/prove2_3.html and http://oeis.org/A014233.
+    * @param n the number to test
+    * @return true iff n is prime
+    */
+  public static boolean isPrime(long n) {
+    int[] b = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37};
+    boolean isPrime = true;
+    for (int i = 0; i < b.length && b[i] < n; i++) {
+      long d = n-1;
+      long pow = (d & ~(d-1)); //2^s
+      
+      while ((d&1)==0) d >>= 1;
+      
+      long ad = modPow(b[i], d, n);
+      boolean isSPRP = (ad == 1);
+      for (long r = 1; !isSPRP && r < pow; r <<= 1)
+        isSPRP = (modPow(ad, r, n) == (n-1));
+      
+      isPrime &= isSPRP;
+    }
+    
+    return isPrime && !(n==0 || n==1);
+  }
+  
+  /**
+    * Performs modular exponentiation
+    * <p>
+    * Uses the "method of repeated squares" to compute the result in O(lg N) time, where N is the exponent.
+    */
+  public static long modPow(long a, long n, long m) {
+    long retVal = 1;
+    
+    for (long currMul = a%m; n > 0; n >>= 1) {
+      if ((n&1) == 1) retVal = (retVal * currMul) % m;
+      currMul = (currMul * currMul) % m;
+    }
+    
+    return retVal;
+  }
+  
+  /**
+    * Calculates the nth partition number
+    * <p>
+    * This uses Euler's Pentagonal Theorem, so it takes O(n) time.
+    */
+  /*public static long partition(int n) {
+    if (n == 0) return 1;
+    if (n  < 0) return 0
+  }*/
+  
+  /**
+    * Given an integer n, returns the next integer with the same number of set bits.
+    * <p>
+    * Known as Gosper's hack.  Source: http://programmers.stackexchange.com/a/67087/51334
+    * Useful for iterating over combinations containing k elements.
+    */
+    public static int gosper(int n) {
+      int c = n & -n;
+      int r = n + c;
+      return (((r^n) >>> 2) / c) | r;
+    }
 }

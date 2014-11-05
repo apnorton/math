@@ -47,10 +47,16 @@ public class Field<E> {
     return mulOp.inverseOf(a);
   }
   
-  public boolean isMultiplicativeIdentity(E a) {
+  /**
+    * @return true iff this is the multiplicative identity
+    */
+  public boolean isOne(E a) {
     return mulOp.isIdentity(a);
   }
   
+  /**
+    * @return true iff this is the additive identity
+    */
   public boolean isAdditiveIdentity(E a) {
     return addOp.isIdentity(a);
   }
