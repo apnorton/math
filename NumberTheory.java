@@ -4,12 +4,7 @@ import java.util.*;
 
 public class NumberTheory {  
   public static void main(String[] args) {
-    int set = (1<<30) - 1;
-    int lim = (1<<30);
-    while (set<lim) {
-      System.out.println(String.format("%32s", Integer.toBinaryString(set)).replace(" ", "0"));
-      set = gosper(set);
-    }
+    System.out.println(divisorFunction(0, Integer.parseInt(args[0])));
   }
   
   /**
@@ -73,7 +68,7 @@ public class NumberTheory {
   /**
     *  Factors a number using trial division, testing only the primes under the square root of the input
     *  @param N The integer to factor
-    *  @return an ArrayList&lt;Integer&gt; of factors, accounting for multiplicity.
+    *  @return a list of factors, accounting for multiplicity.
     */
   public static ArrayList<Integer> getFactors(int N) {
     int primeLimit = (int)(Math.sqrt(N)); //Only one prime factor can be greater than the sqrt of N&1
@@ -96,6 +91,46 @@ public class NumberTheory {
       factors.add(N);
     
     return factors;
+  }
+  
+  /**
+    * The divisor function, $\sigma$
+    * <p>
+    * Implements the divisor function, as found here: http://en.wikipedia.org/wiki/Divisor_function
+    * When $x$ is 1, then this returns the sum of the divisors of n (counting n itself)
+    * When $x$ is 0, it returns the number of divisors of n.
+    * @param N The integer to process
+    * @return the value of the divisor function evaluated at $x, N$.
+    */
+  public static long divisorFunction(int x, int N) {
+    Set<Integer> distinctPrimeFactors = new HashSet<Integer>(getFactors(N));
+    long retVal = 1;
+    for (Integer p : distinctPrimeFactors) {
+      int m = (int)Math.pow(p, x);
+      long toMultiply = 1;
+      int currMul = m;
+      do {
+        toMultiply += currMul;
+        currMul *= m;
+        N /= p;
+      } while (N % p == 0);
+      
+      retVal *= toMultiply;
+    }
+    return retVal;
+  }
+  
+  /**
+    * The number of integers between 0 and N (exclusive) that are coprime to N
+    */
+  public static int totient(int N) {
+    List<Integer> primes = getFactors(N);
+    int retVal = N;
+    for (Integer p : primes) {
+      retVal = (retVal / p) * (p-1);
+    }
+    
+    return retVal;
   }
   
   /**
@@ -205,22 +240,6 @@ public class NumberTheory {
       return (int) Math.round(Math.log(Math.sqrt(5) * (f - 0.5))/Math.log(phi));
     }
   }
-  
-  /**
-    * Returns true if the provided number is a palindrome, false otherwise.
-    * @param n the number
-    * @return true if the provided number is a palindrome, false otherwise.
-    */
-  public static boolean isPalindrome(long n) {
-    char[] digits = Long.toString(n).toCharArray();
-    boolean retVal = true;
-    
-    for (int i = 0; i < digits.length / 2; i++) {
-      retVal &= digits[i] == digits[digits.length - i - 1];
-    }
-    
-    return retVal;
-  }  
 
   /**
     * Computes the inverse of n modulo p using the Extended Euclidean Algorithm.
@@ -256,49 +275,7 @@ public class NumberTheory {
     if (t0 < 0) t0 += p; //Make positive!
     
     return t0; //Coefficient of n in the equation "xn+yp = 1"
-  }
-  
-  /**
-    * Computes the binomial coefficient \(\binom{n}{r} \pmod p\), where \(p\) is a prime number
-    * Uses Lucas' Theorem and modular inverses.
-    * Assumes that \(p\) is prime--otherwise, undefined behavior results.
-    * @param n the \(n\) in \(\binom{n}{r} \pmod p\)
-    * @param r the \(r\) in \(\binom{n}{r} \pmod p\)
-    * @param p the \(p\) in \(\binom{n}{r} \pmod p\)
-    * @return the result of \(\binom{n}{r} \pmod p\)
-    */
-  public static long binomMod(long n, long r, int p) {
-    long retVal = 1;
-    
-    //If n and r are less than p, then we just use the standard process
-    if (n < p && r < p) {      
-      //Computes the denominator
-      for (long i = n; i > n-r; i--)
-        retVal = (retVal * i) % p;
-
-      //Now, compute the denominator
-      for (long i = r; i > 0; i--)
-        retVal = (retVal * modInverse(i, p)) % p;
-      //Note: "denominator" is a figure of speech--
-      //  really, I'm multiplying by the modular inverse
-    }
-    else { //We use Lucas' Theorem!
-      long nCurr, rCurr; //The current digit of n and r in base p.
-      while(r > 0 || n > 0) {
-        //Grab the digits
-        nCurr = n % p; 
-        rCurr = r % p;
-        
-        //The return value is the product (mod p) of binom(nCurr, rCurr)
-        retVal = (retVal * binomMod(nCurr, rCurr, p)) % p;
-        
-        //Strip off the digits we've just used
-        n /= p; 
-        r /= p;
-      }
-    }
-    return retVal;
-  }
+  } 
   
   /**
     * Returns true if the provided integer is prime
@@ -361,16 +338,4 @@ public class NumberTheory {
     if (n == 0) return 1;
     if (n  < 0) return 0
   }*/
-  
-  /**
-    * Given an integer n, returns the next integer with the same number of set bits.
-    * <p>
-    * Known as Gosper's hack.  Source: http://programmers.stackexchange.com/a/67087/51334
-    * Useful for iterating over combinations containing k elements.
-    */
-    public static int gosper(int n) {
-      int c = n & -n;
-      int r = n + c;
-      return (((r^n) >>> 2) / c) | r;
-    }
 }
