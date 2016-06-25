@@ -56,7 +56,7 @@ public class NumberTheory {
       
       //Mark off all N/(2*p) multiples, where p is the current prime.  
       //(We leave off the even multiples, hence the 2)
-      for (int j = 3*i+3; j < sieve.length; j+=2*i+3) sieve[j] = true;
+      for (int j = 3*i+3; j < sieve.length; j+=2*i+3) sieve[j] = true; //TODO: Start at the square of p!
     }
     
     //Cache your work!
@@ -94,11 +94,12 @@ public class NumberTheory {
   }
   
   /**
-    * The divisor function, $\sigma$
+    * The divisor function, \(\sigma\)
     * <p>
     * Implements the divisor function, as found here: http://en.wikipedia.org/wiki/Divisor_function
-    * When $x$ is 1, then this returns the sum of the divisors of n (counting n itself)
-    * When $x$ is 0, it returns the number of divisors of n.
+    * When \(x\) is 1, then this returns the sum of the divisors of n (counting n itself)
+    * When \(x\) is 0, it returns the number of divisors of n.
+    * @param x the divisor function parameter
     * @param N The integer to process
     * @return the value of the divisor function evaluated at $x, N$.
     */
