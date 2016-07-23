@@ -13,5 +13,6 @@ namespace Math {
     bool gcd_test();
     bool mod_pow_test();
     bool is_prime_test();
+    bool bezout_test();
   }
 }

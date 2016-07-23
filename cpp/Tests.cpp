@@ -8,7 +8,8 @@ int main() {
   Tests::test_manager.add_test(&Tests::gcd_test,     string("gcd_test: Tests the GCD function"));
   Tests::test_manager.add_test(&Tests::mod_pow_test, string("mod_pow_test: Tests the mod_pow function."));
   Tests::test_manager.add_test(&Tests::is_prime_test, string("is_prime_test: Tests the is_prime (Miller-Rabin) function."));
-
+  Tests::test_manager.add_test(&Tests::bezout_test, string("bezout_test: Tests that the Bezout-solver is working."));
+  
   Tests::test_manager.run_tests();
   return 0;
 }
@@ -75,29 +76,51 @@ bool Tests::mod_pow_test() {
 }
 
 bool Tests::is_prime_test() {
-    bool passed = true;
+  bool passed = true;
+  
+  uint32_t numTests = 10;
+  uint64_t number[] = {    2,    3, 47297, 58907, 1000000007L,    16,    75,  2000, 4328142,     0, };
+  bool     answer[] = { true, true,  true,  true,        true, false, false, false,   false, false, };
+  
+  uint64_t p;
+  bool test_result;
+  for (uint32_t i = 0; i < numTests; i++) {
+    p = number[i];
+   
+    // Check result
+    test_result = NumberTheory::is_prime(p) == answer[i];
+    passed     &= test_result;
     
-    uint32_t numTests = 10;
-    uint64_t number[] = {    2,    3, 47297, 58907, 1000000007L,    16,    75,  2000, 4328142,     0, };
-    bool     answer[] = { true, true,  true,  true,        true, false, false, false,   false, false, };
+    // UI
+    if (answer[i])
+      cout << "\t" << p << " is prime : ";
+    else 
+      cout << "\t" << p << " is not prime : ";
     
-    uint64_t p;
-    bool test_result;
-    for (uint32_t i = 0; i < numTests; i++) {
-      p = number[i];
-     
-      // Check result
-      test_result = NumberTheory::is_prime(p) == answer[i];
-      passed     &= test_result;
-      
-      // UI
-      if (answer[i])
-        cout << "\t" << p << " is prime : ";
-      else 
-        cout << "\t" << p << " is not prime : ";
-      
-      cout << (test_result ? "PASSED" : "FAILED") << endl;
-    }
+    cout << (test_result ? "PASSED" : "FAILED") << endl;
+  }
+  
+  return passed;
+}
+
+bool Tests::bezout_test() {
+  bool passed = true;
+  
+  uint16_t numTests = 5;
+  int64_t  a[]      = { 240,  46,  1, 2402,   0, };
+  int64_t  b[]      = {  46, 240, 20, 1401, 124, };
+  
+  int64_t x, y, d;
+  bool test_result;
+  for (uint16_t i = 0; i < numTests; i++) {
+    NumberTheory::bezout(a[i], b[i], &x, &y, &d);
     
-    return passed;
+    test_result = (x*a[i] + y*b[i] == d);
+    passed     &= test_result;
+    
+    cout << "\t" << x << "*" << a[i] << " + " << y << "*" << b[i] << " = " << d << " : ";
+    cout << (test_result ? "PASSED" : "FAILED") << endl;
+  }
+  
+  return passed;
 }
